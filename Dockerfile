@@ -8,8 +8,8 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# 运行阶段：轻量JDK镜像，仅保留jar包
-FROM openjdk:17-jdk-slim
+# 运行阶段：轻量JRE镜像，仅保留jar包
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 # 限制内存，适配Render免费实例PORT环境变量
