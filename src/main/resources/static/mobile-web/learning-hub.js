@@ -1,0 +1,45 @@
+(() => {
+  if ($('#learning-hub')) return;
+  let lessons = [
+    {category: '沟通表达', icon: '💬', title: '用“二选一”开启表达', time: '3 分钟', intro: '把开放式提问换成两个明确选项，给孩子更容易开始的表达机会。', steps: ['先举起两样真实物品或图片，例如“苹果 / 香蕉”。', '用简短句子提问：“你想要哪一个？”', '停留 5–10 秒，接受指向、眼神、声音或语言等不同回应。', '回应后马上确认：“你选了苹果。”'], tip: '刚开始只给两个差异明显的选项，成功后再慢慢增加难度。'},
+    {category: '日常自理', icon: '🧦', title: '把大任务拆成小步骤', time: '4 分钟', intro: '把“穿衣服”“收玩具”拆成可看见、可完成的小动作。', steps: ['选一个固定时段，只练一项小任务。', '写下或拍下 3–5 个步骤，按顺序摆放。', '先示范一次，再让孩子完成其中最容易的一步。', '完成后给出具体反馈：“你把袜子放进抽屉了。”'], tip: '以完成为主，不追求速度；连续成功后再加入下一步。'},
+    {category: '情绪陪伴', icon: '🌤️', title: '情绪来时，先连接再引导', time: '3 分钟', intro: '先降低环境和语言刺激，等情绪平稳后再讨论办法。', steps: ['留意声音、光线、人多或任务变化等可能的触发点。', '用简短稳定的话回应：“我在这儿，我们先休息一下。”', '给安全的安静空间、喝水或熟悉物品等缓冲选择。', '平稳后用一句话回顾发生了什么，并记录有效做法。'], tip: '情绪高峰时少讲道理；如果存在安全风险，请优先寻求专业帮助。'},
+    {category: '家庭记录', icon: '📝', title: '每天只记三件小事', time: '2 分钟', intro: '用轻量记录帮助家人看见变化，也便于和专业人员沟通。', steps: ['记下一个“今天做到了什么”。', '记下一个“在哪个情境有困难”。', '记下一个“什么方式有帮助”。', '每周回看一次，选择一个下周继续练习的小目标。'], tip: '记录具体情境和行为，少用“好 / 不好”这类笼统评价。'},
+    {category: '外出准备', icon: '🎒', title: '外出前的预告与选择', time: '3 分钟', intro: '提前让孩子知道去哪儿、做什么、什么时候结束，减少突发变化。', steps: ['出门前用图片或简短话说明目的地和流程。', '告知一个可预期的结束信号，例如“买完牛奶就回家”。', '带上熟悉的小物品和必要的休息安排。', '回家后肯定一个具体进步，并记录下次可调整的地方。'], tip: '首次尝试可从时间短、环境熟悉的地点开始。'},
+    {category: '沟通表达', icon: '🙋', title: '练习“我需要帮助”', time: '3 分钟', intro: '在容易成功的小情境里，给孩子一个清楚的求助方式。', steps: ['准备一个孩子暂时打不开但感兴趣的盒子。', '示范一句简短表达：“帮帮我。”', '递出提示卡或停顿等待，让孩子用适合自己的方式回应。', '立刻帮助完成，并复述：“你说帮帮我了。”'], tip: '从一个固定表达开始，搭配手势或图片也可以。'},
+    {category: '日常自理', icon: '🫧', title: '洗手流程小练习', time: '4 分钟', intro: '用一致的顺序，把洗手变成看得见的例行流程。', steps: ['把“开水、打湿、搓手、冲洗、擦干”做成简单顺序卡。', '家长先和孩子一起完成前两步。', '每次只邀请孩子独立完成一个步骤。', '结束时确认具体成果，例如“你自己擦干手了。”'], tip: '把流程卡放在水池旁，减少口头提醒。'},
+    {category: '情绪陪伴', icon: '😊', title: '给感受找一个名字', time: '3 分钟', intro: '在平静时认识简单情绪词，为之后表达感受做准备。', steps: ['从开心、难过、生气、害怕中选两个常见词。', '借绘本、照片或日常小事说说“看起来像开心”。', '邀请孩子指一指、选一选或说一个词。', '家长也示范自己的感受：“我现在有一点着急。”'], tip: '不要求一次说对，重点是让感受可以被看见和表达。'},
+    {category: '家庭记录', icon: '🔎', title: '用“发生前后”看变化', time: '3 分钟', intro: '用简单的前后记录，帮助家人找到更有效的支持方式。', steps: ['写下当时在做什么、在哪里、身边有什么变化。', '记录孩子做了什么，而不是给行为贴标签。', '记录大人如何回应，以及之后发生了什么。', '每周选一条有效做法，继续在类似情境中尝试。'], tip: '例如记录“收玩具前给了图片提示，孩子完成了两件”，会比“今天表现不错”更有用。'},
+    {category: '外出准备', icon: '⏳', title: '在等待中找一件小事做', time: '3 分钟', intro: '把排队、候诊等等待时间，转换为短而明确的小活动。', steps: ['提前准备一本小书、两张提示卡或一个安静小玩具。', '告诉孩子“等到数字叫到我们，就轮到了”。', '等待中只提供一个简单选择，例如“看书还是数一数”。', '等待结束后肯定具体行为：“你刚才坐着等到了。”'], tip: '活动越简单越好，避免在拥挤场所拿出太多物品。'},
+    {category: '通用方法', icon: '➡️', title: '试试“先……再……”', time: '2 分钟', intro: '用一个清楚的先后顺序，把不喜欢的任务和期待的活动连接起来。', steps: ['选一件需要做的小事，例如“先穿鞋”。', '接上一个孩子愿意做的活动，例如“再去按电梯”。', '用同一句简短表达，并配合手势或图片。', '任务完成后兑现“再”的部分，并肯定努力。'], tip: '“先”的任务要短、具体、可完成，避免一次提出太多要求。'},
+    {category: '通用方法', icon: '🗓️', title: '做一张今天的流程卡', time: '5 分钟', intro: '把一天中重要的几个环节画出来或拍下来，减少反复口头提醒。', steps: ['只选早晨、放学后或睡前其中一个时段。', '挑 3–4 件事，按发生顺序排好。', '完成一项就翻过去、打钩或取下图片。', '第二天沿用同一流程，再根据情况微调。'], tip: '流程卡不需要精美，清楚、一致、能一起使用更重要。'},
+    {category: '通用方法', icon: '🌟', title: '把表扬说得更具体', time: '2 分钟', intro: '具体反馈能让孩子知道自己做对了什么，也更容易再次尝试。', steps: ['留意一个很小的积极动作，例如看向你、等待或收起一件物品。', '马上描述看到的行为：“你听到提醒后把积木放好了。”', '配合微笑、击掌或孩子喜欢的简单回应。', '不需要每件事都表扬，抓住正在练习的重点即可。'], tip: '相比“真棒”，具体描述更能帮助孩子理解下一次怎么做。'},
+    {category: '家长支持', icon: '☕', title: '给自己三分钟缓冲', time: '3 分钟', intro: '照顾孩子很耗能，短暂暂停不是退缩，而是为下一步留出空间。', steps: ['确认孩子处在安全、有照看或可安静待着的状态。', '喝几口水、站到窗边或做几次缓慢呼吸。', '只问自己一句：“现在最需要先处理的是什么？”', '回到当下，只做一个最小的下一步。'], tip: '如果持续感到难以承受、睡眠或情绪明显受影响，可以向可信赖的人或专业人员求助。'},
+    {category: '家长支持', icon: '🤝', title: '家庭协作只约定一件事', time: '5 分钟', intro: '家人不用一次达成所有共识，先统一一个最常见的场景即可。', steps: ['选一个容易摩擦的时段，例如出门前或睡前。', '一起约定一句统一提示语和一个简单流程。', '明确谁负责准备、谁负责陪伴，不互相补充指责。', '一周后回顾：什么有效，下一周只调整一处。'], tip: '一致不等于完美；先减少信息不一致，就已经是很大的帮助。'},
+    {category: '家长支持', icon: '💌', title: '把“今天够好了”写下来', time: '2 分钟', intro: '每天留下一句真实的肯定，帮助自己看见长期陪伴中的小进步。', steps: ['写下一件孩子今天做到的小事。', '写下一件自己已经尽力的事。', '如果今天很困难，也可以只写“今天我们一起熬过去了”。', '每周随意翻看一次，不做比较，只看走过的路。'], tip: '允许疲惫和不完美。稳定、持续的陪伴本身就很有价值。'}
+  ];
+  let selectedCategory = '全部';
+  document.querySelector('main').insertAdjacentHTML('beforeend', '<section id="learning-hub" class="view"><div id="learning-content"></div></section>');
+  const homeGrid = $('#home .grid');
+  if (homeGrid) homeGrid.insertAdjacentHTML('beforeend', '<button type="button" class="learning-entry" onclick="openLearningHub()">成长学习</button>');
+
+  window.openLearningHub = async () => {
+    document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+    $('#learning-hub').classList.add('active');
+    try { const items = await request('/learning-contents'); if (items.length) lessons = items.map(item => ({category:item.category,icon:item.icon,title:item.title,time:item.readingTime,intro:item.intro,steps:String(item.steps||'').split(/\n|\|/).filter(Boolean),tip:item.tip})); } catch (error) {}
+    renderLearningHub();
+  };
+  window.filterLearning = category => { selectedCategory = category; renderLearningHub(); };
+  window.openLesson = index => {
+    const lesson = lessons[index];
+    $('#learning-content').innerHTML = `<button class="learning-back" type="button" onclick="openLearningHub()">‹ 返回成长学习</button><article class="lesson-detail"><span>${lesson.icon} ${lesson.category} · ${lesson.time}</span><h2>${lesson.title}</h2><p>${lesson.intro}</p><h3>可以这样试试</h3><ol>${lesson.steps.map(step => `<li>${step}</li>`).join('')}</ol><div class="lesson-tip">小提示：${lesson.tip}</div><p class="lesson-notice">内容仅作家庭日常参考，不替代诊断、治疗或专业建议。</p></article>`;
+  };
+  function renderLearningHub() {
+    const categories = ['全部', ...new Set(lessons.map(lesson => lesson.category))];
+    const visible = selectedCategory === '全部' ? lessons : lessons.filter(lesson => lesson.category === selectedCategory);
+    $('#learning-content').innerHTML = `<div class="learning-hero"><span>星宝成长小课堂</span><h2>把方法变成<br/>今天能做的小一步</h2><p>沟通、自理、情绪与家庭陪伴的轻量参考</p></div><div class="learning-chips">${categories.map(category => `<button type="button" class="${category === selectedCategory ? 'selected' : ''}" onclick="filterLearning('${category}')">${category}</button>`).join('')}</div><p class="learning-subtitle">家庭方法卡</p><div class="lesson-list">${visible.map(lesson => `<button class="lesson-card" type="button" onclick="openLesson(${lessons.indexOf(lesson)})"><i>${lesson.icon}</i><span><em>${lesson.category} · ${lesson.time}</em><b>${lesson.title}</b><small>${lesson.intro}</small></span><strong>›</strong></button>`).join('')}</div><div class="learning-reminder">每个家庭和孩子的节奏都不同，选择容易开始的一步即可。</div>`;
+  }
+  document.head.insertAdjacentHTML('beforeend', `<style>
+    .learning-entry{background:linear-gradient(135deg,#ff8ca8,#ffb481)!important;color:#fff!important;border:0!important}.learning-hero{margin:-2px -2px 16px;padding:22px 19px;border-radius:20px;color:#fff;background:linear-gradient(135deg,#ff859f,#f6a574)}.learning-hero span{font-size:12px;font-weight:700;opacity:.88}.learning-hero h2{margin:9px 0 7px;color:#fff;font-size:25px;line-height:1.28}.learning-hero p{margin:0;color:#fff8f5;font-size:13px}.learning-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}.learning-chips button{width:auto;min-height:0;padding:7px 11px;border:1px solid #f0dbe0;border-radius:18px;color:#8f727b;background:#fff;font-size:12px;white-space:nowrap}.learning-chips button.selected{color:#fff;border-color:#ff779a;background:#ff779a}.learning-subtitle{margin:0 0 8px;color:#715a61;font-weight:800}.lesson-list{display:grid;gap:9px}.lesson-card{display:grid;grid-template-columns:39px 1fr 16px;align-items:center;gap:10px;padding:12px!important;border:1px solid #f0e0e4!important;border-radius:15px!important;color:#57484d!important;background:#fff!important;text-align:left}.lesson-card i{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:#fff1f4;font-size:20px;font-style:normal}.lesson-card span{display:grid;gap:3px}.lesson-card em{color:#bd7a8b;font-size:11px;font-style:normal}.lesson-card b{font-size:15px}.lesson-card small{overflow:hidden;color:#8b7b80;font-size:12px;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}.lesson-card strong{color:#e2889d;font-size:24px;font-weight:400}.learning-reminder{margin-top:14px;padding:10px 12px;border-radius:12px;color:#886d75;background:#fff5e8;font-size:12px;line-height:1.5}.learning-back{width:auto;min-height:0;margin:0 0 11px;padding:7px 11px!important;border:0!important;border-radius:14px!important;color:#a56676!important;background:#fff0f3!important}.lesson-detail{padding:18px;border:1px solid #f0dfe4;border-radius:18px;background:#fff}.lesson-detail>span{color:#bd7a8b;font-size:12px}.lesson-detail h2{margin:8px 0;color:#57484d}.lesson-detail p{color:#75666c;line-height:1.7}.lesson-detail h3{margin:18px 0 8px;color:#6d555d;font-size:16px}.lesson-detail ol{margin:0;padding-left:21px;color:#715f65;line-height:1.9;font-size:14px}.lesson-tip{margin-top:15px;padding:10px 12px;border-radius:12px;color:#8d6b50;background:#fff6e7;font-size:13px;line-height:1.5}.lesson-notice{margin:13px 0 0;color:#a39195!important;font-size:11px}
+  </style>`);
+})();
