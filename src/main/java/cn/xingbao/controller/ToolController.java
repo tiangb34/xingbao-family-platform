@@ -1,0 +1,3 @@
+package cn.xingbao.controller;
+import cn.xingbao.common.ApiResponse; import cn.xingbao.domain.ToolResource; import cn.xingbao.repo.ToolRepository; import org.springframework.web.bind.annotation.*; import java.util.List; import java.util.Map;
+@RestController @RequestMapping("/api/v1/tools") public class ToolController { private final ToolRepository tools; public ToolController(ToolRepository t){tools=t;} @GetMapping public ApiResponse<Map<String,Object>> list(){return ApiResponse.ok(Map.of("items",tools.findByPublishedTrueAndDeletedFalseOrderByCreatedAtDesc(),"disclaimer","量表与手册仅供家庭参考，不替代医疗或专业评估。"));} @PostMapping public ApiResponse<ToolResource> create(@RequestBody ToolResource t){return ApiResponse.ok(tools.save(t));} }

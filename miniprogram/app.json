@@ -1,0 +1,5 @@
+{
+  "pages": ["pages/home/index", "pages/profile/index", "pages/community/index", "pages/tools/index", "pages/account/index", "pages/auth/index", "pages/child-form/index", "pages/publish/index", "pages/community-detail/index", "pages/training/index", "pages/learning/index", "pages/tool-detail/index"],
+  "window": {"navigationBarTitleText": "星宝家庭互助", "navigationBarBackgroundColor": "#fff7f3", "navigationBarTextStyle": "black", "backgroundColor": "#fff9f6"},
+  "tabBar": {"color": "#947b80", "selectedColor": "#f55f8c", "backgroundColor": "#ffffff", "list": [{"pagePath":"pages/home/index","text":"首页"},{"pagePath":"pages/profile/index","text":"档案"},{"pagePath":"pages/community/index","text":"互助"},{"pagePath":"pages/tools/index","text":"工具"},{"pagePath":"pages/account/index","text":"我的"}]}
+}

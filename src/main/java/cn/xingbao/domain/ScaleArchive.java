@@ -1,0 +1,3 @@
+package cn.xingbao.domain;
+import jakarta.persistence.Entity;
+@Entity public class ScaleArchive extends BaseEntity { private Long childId; private String scaleType; private String score; private String resultNote; private String fileUrl; public Long getChildId(){return childId;} public void setChildId(Long v){childId=v;} public String getScaleType(){return scaleType;} public void setScaleType(String v){scaleType=v;} public String getScore(){return score;} public void setScore(String v){score=v;} public String getResultNote(){return resultNote;} public void setResultNote(String v){resultNote=v;} public String getFileUrl(){return fileUrl;} public void setFileUrl(String v){fileUrl=v;} }

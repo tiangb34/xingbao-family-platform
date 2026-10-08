@@ -1,0 +1,2 @@
+const {request,ensureUser,notify}=require('../../utils/api');
+Page({data:{children:[]},onShow(){this.load()},async load(){const user=ensureUser();if(!user)return;try{const children=await request('/children?userId='+user.id);this.setData({children:children.map(x=>({...x,genderText:{MALE:'男',FEMALE:'女',UNKNOWN:'未设置'}[x.gender]||'未设置'}))})}catch(e){notify(e)}},create(){wx.navigateTo({url:'/pages/child-form/index'})},edit(e){wx.navigateTo({url:'/pages/child-form/index?id='+e.currentTarget.dataset.id})}});

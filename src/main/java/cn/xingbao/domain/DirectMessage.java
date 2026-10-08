@@ -1,0 +1,3 @@
+package cn.xingbao.domain;
+import jakarta.persistence.Entity;
+@Entity public class DirectMessage extends BaseEntity { private Long fromUserId; private Long toUserId; private Long listingId; private String body; private String status="SENT"; public Long getFromUserId(){return fromUserId;} public void setFromUserId(Long v){fromUserId=v;} public Long getToUserId(){return toUserId;} public void setToUserId(Long v){toUserId=v;} public Long getListingId(){return listingId;} public void setListingId(Long v){listingId=v;} public String getBody(){return body;} public void setBody(String v){body=v;} public String getStatus(){return status;} public void setStatus(String v){status=v;} }

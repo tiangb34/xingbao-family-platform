@@ -1,0 +1,17 @@
+package cn.xingbao.controller;
+
+import cn.xingbao.common.ApiResponse; import cn.xingbao.domain.ChildProfile; import cn.xingbao.domain.GrowthRecord; import cn.xingbao.repo.ChildRepository; import cn.xingbao.repo.GrowthRecordRepository; import cn.xingbao.repo.GrowthRecordTypeRepository; import cn.xingbao.service.PrivacyService;
+import org.springframework.web.bind.annotation.*; import java.time.LocalDateTime; import java.util.List; import java.util.Map;
+
+@RestController @RequestMapping("/api/v1/children")
+public class ChildController {
+  private final ChildRepository children; private final GrowthRecordRepository records; private final GrowthRecordTypeRepository recordTypes; private final PrivacyService privacy;
+  public ChildController(ChildRepository c,GrowthRecordRepository r,GrowthRecordTypeRepository types,PrivacyService p){children=c;records=r;recordTypes=types;privacy=p;}
+  @GetMapping public ApiResponse<List<ChildProfile>> list(@RequestParam Long userId){return ApiResponse.ok(children.findByUserIdAndDeletedFalse(userId));}
+  @PostMapping public ApiResponse<ChildProfile> create(@RequestBody ChildProfile child){privacy.requireSensitiveConsent(child.getUserId()); return ApiResponse.ok(children.save(child));}
+  @PutMapping("/{id}") public ApiResponse<ChildProfile> update(@PathVariable Long id,@RequestBody ChildProfile changes){ChildProfile c=children.findById(id).orElseThrow(()->new IllegalArgumentException("档案不存在")); if(changes.getNickname()!=null)c.setNickname(changes.getNickname()); if(changes.getGender()!=null)c.setGender(changes.getGender()); if(changes.getBirthday()!=null)c.setBirthday(changes.getBirthday()); if(changes.getDiagnosisCiphertext()!=null){privacy.requireSensitiveConsent(c.getUserId()); c.setDiagnosisCiphertext(changes.getDiagnosisCiphertext());} c.setInterventionYears(changes.getInterventionYears()); return ApiResponse.ok(children.save(c));}
+  @DeleteMapping("/{id}") public ApiResponse<Void> delete(@PathVariable Long id){ChildProfile c=children.findById(id).orElseThrow(()->new IllegalArgumentException("档案不存在")); c.setDeleted(true); children.save(c); return ApiResponse.ok(null);}
+  @GetMapping("/{childId}/records") public ApiResponse<List<GrowthRecord>> records(@PathVariable Long childId){return ApiResponse.ok(records.findByChildIdAndDeletedFalseOrderByOccurredAtDesc(childId));}
+  @PostMapping("/{childId}/records") public ApiResponse<GrowthRecord> addRecord(@PathVariable Long childId,@RequestBody GrowthRecord r){ChildProfile c=children.findById(childId).orElseThrow(()->new IllegalArgumentException("档案不存在")); privacy.requireSensitiveConsent(c.getUserId()); r.setChildId(childId); if(r.getOccurredAt()==null)r.setOccurredAt(LocalDateTime.now()); if(r.getType()==null||recordTypes.findByEnabledTrueAndDeletedFalseOrderBySortOrderAscCreatedAtAsc().stream().noneMatch(t->t.getCode().equals(r.getType())))throw new IllegalArgumentException("记录类型不存在或已停用"); return ApiResponse.ok(records.save(r));}
+  @GetMapping("/{childId}/report") public ApiResponse<Map<String,Object>> report(@PathVariable Long childId){List<GrowthRecord> rs=records.findByChildIdAndDeletedFalseOrderByOccurredAtDesc(childId); long minutes=rs.stream().map(GrowthRecord::getDurationMinutes).filter(v->v!=null).mapToLong(Integer::longValue).sum(); return ApiResponse.ok(Map.of("childId",childId,"recordCount",rs.size(),"totalDurationMinutes",minutes,"disclaimer","仅用于个人记录与趋势参考，不构成诊断结论。"));}
+}

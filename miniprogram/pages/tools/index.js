@@ -1,0 +1,1 @@
+const {request,notify}=require('../../utils/api');Page({data:{items:[]},onShow(){this.load()},async load(){try{const d=await request('/tools');this.setData({items:d.items||[]})}catch(e){notify(e)}},open(e){wx.navigateTo({url:'/pages/tool-detail/index?id='+e.currentTarget.dataset.id})}});

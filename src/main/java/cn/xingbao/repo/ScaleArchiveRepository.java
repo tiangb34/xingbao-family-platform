@@ -1,0 +1,1 @@
+package cn.xingbao.repo; import cn.xingbao.domain.ScaleArchive; import org.springframework.data.jpa.repository.JpaRepository; import java.util.List; public interface ScaleArchiveRepository extends JpaRepository<ScaleArchive,Long>{List<ScaleArchive> findByChildIdAndDeletedFalseOrderByCreatedAtDesc(Long childId);}

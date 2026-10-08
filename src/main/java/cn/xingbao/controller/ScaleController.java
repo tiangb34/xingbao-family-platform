@@ -1,0 +1,3 @@
+package cn.xingbao.controller;
+import cn.xingbao.common.ApiResponse; import cn.xingbao.domain.ScaleArchive; import cn.xingbao.repo.ScaleArchiveRepository; import org.springframework.web.bind.annotation.*; import java.util.List;
+@RestController @RequestMapping("/api/v1/children/{childId}/scales") public class ScaleController {private final ScaleArchiveRepository scales;public ScaleController(ScaleArchiveRepository s){scales=s;}@GetMapping public ApiResponse<List<ScaleArchive>> list(@PathVariable Long childId){return ApiResponse.ok(scales.findByChildIdAndDeletedFalseOrderByCreatedAtDesc(childId));}@PostMapping public ApiResponse<ScaleArchive> add(@PathVariable Long childId,@RequestBody ScaleArchive s){s.setChildId(childId);return ApiResponse.ok(scales.save(s));}}

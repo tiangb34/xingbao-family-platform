@@ -1,0 +1,7 @@
+{
+  "description": "星宝家庭互助平台微信小程序",
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "setting": {"es6": true, "minified": true, "urlCheck": true},
+  "appid": "touristappid"
+}

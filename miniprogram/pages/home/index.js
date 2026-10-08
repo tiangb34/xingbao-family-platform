@@ -1,0 +1,1 @@
+Page({data:{menus:[{name:'星宝档案',icon:'★',url:'/pages/profile/index'},{name:'成长学习',icon:'◈',url:'/pages/learning/index'},{name:'每日训练',icon:'✓',url:'/pages/training/index'},{name:'家长社区',icon:'♡',url:'/pages/community/index'},{name:'居家工具',icon:'☼',url:'/pages/tools/index'},{name:'我的',icon:'◯',url:'/pages/account/index'}]},go(e){wx.navigateTo({url:e.currentTarget.dataset.url});}});
