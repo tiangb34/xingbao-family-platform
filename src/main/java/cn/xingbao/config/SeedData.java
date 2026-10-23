@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SeedData {
-  @Bean CommandLineRunner seed(ToolRepository tools, RiskKeywordRuleRepository keywords, GrowthRecordTypeRepository recordTypes, SystemSettingRepository settings, LearningContentRepository learning, CognitionContentRepository cognition) {
-    return args -> { seedTools(tools); if (cognition.count() == 0) seedCognition(cognition); if (learning.count() == 0) seedLearning(learning); if (keywords.count() == 0) seedKeywords(keywords); if (recordTypes.count() == 0) seedRecordTypes(recordTypes); if (settings.findBySettingKeyAndDeletedFalse(SystemSettingController.COMMUNITY_MAX_IMAGES).isEmpty()) { SystemSetting setting = new SystemSetting(); setting.setSettingKey(SystemSettingController.COMMUNITY_MAX_IMAGES); setting.setSettingValue("2"); setting.setRemark("社区发帖最大图片数量"); settings.save(setting); } };
+  @Bean CommandLineRunner seed(ToolRepository tools, RiskKeywordRuleRepository keywords, GrowthRecordTypeRepository recordTypes, SystemSettingRepository settings, LearningContentRepository learning, CognitionContentRepository cognition, KnowledgeDocumentRepository knowledge) {
+    return args -> { seedTools(tools); if (cognition.count() == 0) seedCognition(cognition); if (learning.count() == 0) seedLearning(learning); if (keywords.count() == 0) seedKeywords(keywords); if (recordTypes.count() == 0) seedRecordTypes(recordTypes); if (knowledge.count() == 0) seedKnowledge(knowledge); if (settings.findBySettingKeyAndDeletedFalse(SystemSettingController.COMMUNITY_MAX_IMAGES).isEmpty()) { SystemSetting setting = new SystemSetting(); setting.setSettingKey(SystemSettingController.COMMUNITY_MAX_IMAGES); setting.setSettingValue("2"); setting.setRemark("社区发帖最大图片数量"); settings.save(setting); } };
   }
   private static void seedTools(ToolRepository repo) {
     if (repo.count() == 0) for (String[] item : new String[][] {{"SCALE", "筛查量表使用说明", "帮助家长理解家庭观察记录的用途与边界。", "平台编辑"}, {"POLICY", "特殊儿童帮扶政策查询", "按地区、事项查询可进一步了解的公共服务与帮扶信息。", "公开政策"}, {"RESOURCE", "视觉提示卡使用指南", "提供居家教学与行为支持中视觉提示卡的基础用法。", "平台编辑"}, {"MANUAL", "情绪应急手册", "在高压力情绪场景中，帮助家人先稳住现场与关系。", "平台编辑"}}) { ToolResource tool = new ToolResource(); tool.setType(item[0]); tool.setTitle(item[1]); tool.setContent(item[2]); tool.setSource(item[3]); repo.save(tool); }
@@ -35,4 +35,22 @@ public class SeedData {
   private static void add(RiskKeywordRuleRepository repo,String keyword,String level,boolean review,int priority,String remark){RiskKeywordRule item=new RiskKeywordRule();item.setKeyword(keyword);item.setRiskLevel(level);item.setReviewRequired(review);item.setPriority(priority);item.setRemark(remark);repo.save(item);}
   private static void addType(GrowthRecordTypeRepository repo,String code,String name,int sort,String remark){GrowthRecordType item=new GrowthRecordType();item.setCode(code);item.setName(name);item.setSortOrder(sort);item.setRemark(remark);repo.save(item);}
   private static void addLearning(LearningContentRepository repo,String category,String icon,String title,int sort){LearningContent item=new LearningContent();item.setCategory(category);item.setIcon(icon);item.setTitle(title);item.setIntro("一份可快速上手的家庭方法参考。");item.setSteps("选择一个容易开始的情境\n用简短清晰的方式提示\n等待回应并给予具体肯定\n记录有效的做法");item.setTip("内容仅供家庭日常参考，不替代专业建议。");item.setSortOrder(sort);repo.save(item);}
+  private static void seedKnowledge(KnowledgeDocumentRepository repo){
+    addKnowledge(repo,"ABA应用行为分析基础","干预方法","ABA（应用行为分析）是通过正向强化来帮助孩子学习新技能的方法。核心要点：1）把大目标拆成小步骤；2）及时给予具体奖励；3）在日常生活中自然练习；4）记录进步并调整策略。适合家庭日常使用，建议每次练习5-10分钟，保持轻松愉快。");
+    addKnowledge(repo,"如何培养孩子的语言能力","语言沟通","培养语言能力的日常方法：1）多描述你和孩子正在做的事；2）给孩子二选一的机会，鼓励表达；3）耐心等待孩子回应，不要急于代答；4）用简短清晰的句子交流；5）通过绘本、儿歌增加语言输入。每个孩子节奏不同，请保持耐心。");
+    addKnowledge(repo,"孩子情绪崩溃怎么办","情绪管理","情绪崩溃时的应对步骤：1）先确保环境安全，移开危险物品；2）降低声音和刺激，用平稳语气陪伴；3）不要讲道理或质问，给一些空间；4）平静后一起复盘原因；5）记录触发因素，下次提前预防。如频繁发生或有自伤风险，请咨询专业人员。");
+    addKnowledge(repo,"家庭视觉提示卡制作指南","干预方法","视觉提示卡帮助孩子理解日常流程。制作方法：1）用简单图片或文字表示每个步骤；2）按时间顺序排列；3）放在孩子容易看到的地方；4）每完成一步就移走或打勾；5）保持一致性，逐步建立习惯。可用纸板、磁贴或手机相册制作。");
+    addKnowledge(repo,"什么是感觉统合训练","干预方法","感觉统合训练帮助孩子处理感官信息。常见活动：1）荡秋千、蹦床等前庭觉活动；2）玩沙、玩水、橡皮泥等触觉活动；3）拼图、串珠等本体觉活动。注意观察孩子的反应，避免过度刺激，每次10-15分钟为宜。");
+    addKnowledge(repo,"如何建立日常规律","生活自理","建立规律的建议：1）固定作息时间，减少不确定性；2）用视觉日程表展示每天流程；3）变化前提前预告；4）从小的固定习惯开始；5）坚持执行，逐步增加内容。规律能给孩子安全感，减少焦虑和问题行为。");
+    addKnowledge(repo,"社交技能家庭练习","社交互动","家庭社交练习方法：1）角色扮演练习打招呼、轮流、分享；2）通过桌游学习规则和等待；3）安排小型聚会，逐步增加社交机会；4）教孩子识别表情和情绪；5）练习后给予具体正面反馈。社交需要大量练习，请保持耐心。");
+  }
+  private static void addKnowledge(KnowledgeDocumentRepository repo, String title, String category, String content){
+    KnowledgeDocument doc = new KnowledgeDocument();
+    doc.setTitle(title);
+    doc.setCategory(category);
+    doc.setContent(content);
+    doc.setTags(title + " " + category);
+    doc.setPublished(true);
+    repo.save(doc);
+  }
 }

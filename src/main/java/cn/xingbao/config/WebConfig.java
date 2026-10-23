@@ -11,6 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addResourceHandler("/admin/**").addResourceLocations("file:./admin-web/");
     registry.addResourceHandler("/app/**").addResourceLocations("file:./mobile-web/");
     registry.addResourceHandler("/uploads/**").addResourceLocations("file:./uploads/");
+    registry.addResourceHandler("/chat-widget.js").addResourceLocations("classpath:/static/chat-widget.js");
   }
   @Override public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/api/**").allowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*").allowedMethods("GET","POST","PUT","DELETE","OPTIONS").allowedHeaders("*");

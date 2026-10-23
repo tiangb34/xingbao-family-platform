@@ -8,7 +8,7 @@
 mvn spring-boot:run
 ```
 
-服务默认监听 `http://localhost:8088`，H2 控制台为 `http://localhost:8088/h2-console`。
+服务默认监听 `http://localhost:8090`，H2 控制台为 `http://localhost:8090/h2-console`。
 
 ## 前端入口
 
@@ -18,8 +18,8 @@ mvn spring-boot:run
 启动后端后可直接访问（推荐）：
 
 ```text
-管理端：http://localhost:8088/admin/
-APP 端：http://localhost:8088/app/
+管理端：http://localhost:8090/admin/
+APP 端：http://localhost:8090/app/
 ```
 
 也可在前端目录中单独启动静态预览：
@@ -30,7 +30,7 @@ cd admin-web && python3 -m http.server 5174
 cd mobile-web && python3 -m http.server 5175
 ```
 
-分别打开 `http://localhost:5174` 和 `http://localhost:5175`。两端默认连接 `http://localhost:8088/api/v1`。
+分别打开 `http://localhost:5174` 和 `http://localhost:5175`。两端默认连接 `http://localhost:8090/api/v1`。
 
 ## 已实现 API
 

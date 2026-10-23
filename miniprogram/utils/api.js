@@ -1,6 +1,6 @@
 const app = getApp();
 // 开发者工具可临时改为局域网地址；正式版必须替换为已备案 HTTPS 域名。
-const BASE_URL = 'http://192.168.10.74:8088/api/v1';
+const BASE_URL = 'http://192.168.10.74:8090/api/v1';
 function request(path, options = {}) {
   return new Promise((resolve, reject) => wx.request({url: BASE_URL + path, method: options.method || 'GET', data: options.data, header: {'content-type':'application/json'}, success: result => { const body = result.data || {}; if (result.statusCode >= 200 && result.statusCode < 300 && body.code === 200) resolve(body.data); else reject(new Error(body.message || '请求失败')); }, fail: () => reject(new Error('网络连接失败，请稍后重试'))}));
 }

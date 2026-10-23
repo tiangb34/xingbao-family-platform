@@ -19,3 +19,14 @@ spring:
     default-property-inclusion: non_null
 app:
   medical-disclaimer: "本平台内容仅供家庭互助与信息参考，不构成医疗诊断、治疗建议或疗效承诺。"
+
+ai:
+  default-provider: doubao
+  qwen:
+    api-key: ${QWEN_API_KEY:}
+    url: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+    model: qwen-plus
+  doubao:
+    api-key: ${DOUBAO_API_KEY:}
+    url: https://ark.cn-beijing.volces.com/api/v3/chat/completions
+    model: doubao-seed-2-1-turbo-260628
