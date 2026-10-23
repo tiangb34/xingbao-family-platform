@@ -1,5 +1,5 @@
 (function() {
-  const API_BASE = location.port === '8090' ? '/api/v1' : 'http://127.0.0.1:8090/api/v1';
+  const API_BASE = '/api/v1';
   let sessionId = '';
   let isOpen = false;
 
