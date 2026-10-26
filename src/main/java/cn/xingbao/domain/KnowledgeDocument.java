@@ -27,6 +27,10 @@ public class KnowledgeDocument extends BaseEntity {
   /** 是否已发布（未发布的文档不参与 AI 问答检索） */
   private boolean published = true;
 
+  /** 文本向量嵌入（JSON 数组格式，用于向量相似度检索） */
+  @Lob
+  private String embedding;
+
   public String getTitle() { return title; }
   public void setTitle(String title) { this.title = title; }
 
@@ -41,4 +45,7 @@ public class KnowledgeDocument extends BaseEntity {
 
   public boolean isPublished() { return published; }
   public void setPublished(boolean published) { this.published = published; }
+
+  public String getEmbedding() { return embedding; }
+  public void setEmbedding(String embedding) { this.embedding = embedding; }
 }

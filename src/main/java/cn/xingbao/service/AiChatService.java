@@ -32,6 +32,7 @@ public class AiChatService {
   private final KnowledgeDocumentRepository documents;
   private final ConversationRepository conversationRepository;
   private final ConversationMessageRepository messageRepository;
+  private final EmbeddingService embeddingService;
 
   /** 保留的最近消息条数（用于截断过长历史） */
   private static final int MAX_HISTORY_MESSAGES = 20;
@@ -87,10 +88,12 @@ public class AiChatService {
 
   public AiChatService(KnowledgeDocumentRepository documents,
                         ConversationRepository conversationRepository,
-                        ConversationMessageRepository messageRepository) {
+                        ConversationMessageRepository messageRepository,
+                        EmbeddingService embeddingService) {
     this.documents = documents;
     this.conversationRepository = conversationRepository;
     this.messageRepository = messageRepository;
+    this.embeddingService = embeddingService;
   }
 
   /**
@@ -317,8 +320,8 @@ public class AiChatService {
   }
 
   /**
-   * 知识库检索 - 基于关键词匹配
-   * 计算每篇文档与查询的相关性分数，返回 Top 5
+   * 知识库检索 - 基于向量相似度
+   * 将用户查询转为向量，与所有文档向量计算余弦相似度，返回 Top 5
    *
    * @param query 用户查询内容
    * @return 相关性最高的文档列表（最多5篇）
@@ -326,31 +329,53 @@ public class AiChatService {
   private List<KnowledgeDocument> searchKnowledge(String query) {
     List<KnowledgeDocument> allDocs = documents.findByPublishedTrueAndDeletedFalseOrderByCreatedAtDesc();
 
-    String lowerQuery = query.toLowerCase();
+    // 生成查询向量
+    double[] queryVector;
+    try {
+      queryVector = embeddingService.generate(query);
+    } catch (Exception e) {
+      org.slf4j.LoggerFactory.getLogger(AiChatService.class).warn("向量生成失败，降级为关键词检索: {}", e.getMessage());
+      return searchKnowledgeFallback(query, allDocs);
+    }
 
+    // 计算每篇文档的向量相似度
+    return allDocs.stream()
+      .filter(doc -> doc.getContent() != null && !doc.getContent().isEmpty() && doc.getEmbedding() != null)
+      .sorted(Comparator.comparingDouble(doc -> {
+        try {
+          double[] docVector = embeddingService.fromJson(doc.getEmbedding());
+          return -embeddingService.cosineSimilarity(queryVector, docVector);
+        } catch (Exception e) {
+          return 0.0;
+        }
+      }))
+      .limit(5)
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * 降级方案：向量检索失败时使用关键词匹配
+   */
+  private List<KnowledgeDocument> searchKnowledgeFallback(String query, List<KnowledgeDocument> allDocs) {
+    String lowerQuery = query.toLowerCase();
     return allDocs.stream()
       .filter(doc -> doc.getContent() != null && !doc.getContent().isEmpty())
       .sorted(Comparator.comparingInt(doc -> {
         String content = doc.getContent().toLowerCase();
         String title = doc.getTitle() != null ? doc.getTitle().toLowerCase() : "";
         String tags = doc.getTags() != null ? doc.getTags().toLowerCase() : "";
-
-        // 计算相关性分数
         int score = 0;
-        if (title.contains(lowerQuery)) score += 10;  // 标题匹配权重最高
-        if (tags.contains(lowerQuery)) score += 5;    // 标签匹配次之
-        if (content.contains(lowerQuery)) score += 1; // 内容匹配权重最低
-
-        // 分词后逐词匹配额外加分
+        if (title.contains(lowerQuery)) score += 10;
+        if (tags.contains(lowerQuery)) score += 5;
+        if (content.contains(lowerQuery)) score += 1;
         for (String keyword : lowerQuery.split("\\s+")) {
           if (title.contains(keyword)) score += 3;
           if (tags.contains(keyword)) score += 2;
           if (content.contains(keyword)) score += 1;
         }
-
-        return -score; // 负数实现降序排列
+        return -score;
       }))
-      .limit(5) // 只取前5篇最相关文档
+      .limit(5)
       .collect(Collectors.toList());
   }
 

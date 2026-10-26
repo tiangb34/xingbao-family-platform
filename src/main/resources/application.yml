@@ -29,4 +29,6 @@ ai:
   doubao:
     api-key: ${DOUBAO_API_KEY:}
     url: https://ark.cn-beijing.volces.com/api/v3/chat/completions
-    model: ${DOUBAO_MODEL}
+    model: ${DOUBAO_MODEL:}
+    embedding-url: https://ark.cn-beijing.volces.com/api/v3/embeddings/multimodal
+    embedding-model: ${DOUBAO_EMBEDDING_MODEL:}

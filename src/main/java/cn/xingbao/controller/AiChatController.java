@@ -4,6 +4,8 @@ import cn.xingbao.common.ApiResponse;
 import cn.xingbao.domain.KnowledgeDocument;
 import cn.xingbao.repo.KnowledgeDocumentRepository;
 import cn.xingbao.service.AiChatService;
+import cn.xingbao.service.EmbeddingService;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,10 +20,12 @@ import java.util.Map;
 public class AiChatController {
   private final AiChatService aiChatService;
   private final KnowledgeDocumentRepository documents;
+  private final EmbeddingService embeddingService;
 
-  public AiChatController(AiChatService aiChatService, KnowledgeDocumentRepository documents) {
+  public AiChatController(AiChatService aiChatService, KnowledgeDocumentRepository documents, EmbeddingService embeddingService) {
     this.aiChatService = aiChatService;
     this.documents = documents;
+    this.embeddingService = embeddingService;
   }
 
   /**
@@ -52,16 +56,53 @@ public class AiChatController {
 
   /**
    * 创建知识库文档（管理端使用）
-   * 创建成功后清空答案缓存，确保后续回答基于最新知识库
+   * 创建成功后自动生成向量嵌入，清空答案缓存
    *
    * @param doc 知识库文档对象
    * @return 保存后的文档对象
    */
   @PostMapping("/admin/knowledge")
   public ApiResponse<KnowledgeDocument> createKnowledge(@RequestBody KnowledgeDocument doc) {
+    generateAndSaveEmbedding(doc);
     KnowledgeDocument saved = documents.save(doc);
     aiChatService.clearCache();
     return ApiResponse.ok(saved);
+  }
+
+  /**
+   * 批量重新生成所有知识库文档的向量嵌入
+   * 当嵌入模型升级或需要重建索引时调用
+   *
+   * @return 重新生成的文档数量
+   */
+  @PostMapping("/admin/knowledge/rebuild-embeddings")
+  public ApiResponse<Map<String, Object>> rebuildEmbeddings() {
+    List<KnowledgeDocument> allDocs = documents.findByPublishedTrueAndDeletedFalseOrderByCreatedAtDesc();
+    int successCount = 0;
+    int failCount = 0;
+    for (KnowledgeDocument doc : allDocs) {
+      try {
+        generateAndSaveEmbedding(doc);
+        documents.save(doc);
+        successCount++;
+      } catch (Exception e) {
+        LoggerFactory.getLogger(AiChatController.class).warn("文档向量生成失败: {} - {}", doc.getTitle(), e.getMessage());
+        failCount++;
+      }
+    }
+    aiChatService.clearCache();
+    return ApiResponse.ok(Map.of("total", allDocs.size(), "success", successCount, "failed", failCount));
+  }
+
+  /**
+   * 为文档生成向量嵌入并设置到文档对象
+   */
+  private void generateAndSaveEmbedding(KnowledgeDocument doc) {
+    if (doc.getContent() != null && !doc.getContent().isEmpty()) {
+      String fullText = (doc.getTitle() != null ? doc.getTitle() + " " : "") + doc.getContent();
+      double[] vector = embeddingService.generate(fullText);
+      doc.setEmbedding(embeddingService.toJson(vector));
+    }
   }
 
   /**
